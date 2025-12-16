@@ -1,7 +1,7 @@
 import dino from "../assets/images/dinogame.jpg"
 import { useNavigate } from "react-router-dom"
 import { useState, useEffect } from 'react'
-import { ref, set, push, onValue, off } from "firebase/database";
+import { ref,push, onValue } from "firebase/database";
 import { db } from "../firebase";
 function DashBoard() {
 
@@ -23,7 +23,6 @@ function DashBoard() {
             username: user,
         });
         
-
         navigate('/gamecanvas', {
             state: { username: user }
         })
@@ -38,9 +37,7 @@ function DashBoard() {
                 setScores([]);
                 return;
             }
-            let scoresArray = Object.values(data);
-
-            scoresArray.sort((a, b) => b.score - a.score);
+            let scoresArray = Object.values(data).filter(item => item.score !== 0).sort((a,b)=>b.score-a.score);
             setScores(scoresArray.slice(0, 5));
             
         };
@@ -77,27 +74,21 @@ function DashBoard() {
                 <div className="md:flex">
                     <div className="p-8">
                         <div className="text-lg font-semibold tracking-wide text-indigo-500 uppercase">Leadership Board</div>
-
                         <div className="mt-4">
-                            {score.map((item, index) => (
-                                <div
-                                    key={index}
-                                    className="flex justify-between items-center py-2 border-b"
-                                >
+                            {score.map((user,id) => (
+                                <div key={id} className="flex justify-between items-center py-2 border-b">
                                     <span className="font-medium text-indigo-600 ">
-                                        {item.name}
+                                        {user.name}
                                     </span>
                                     <span className="font-bold text-indigo-600">
-                                        {item.score}
+                                        {user.score }
                                     </span>
                                 </div>
                             ))}
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </>
     )
 }

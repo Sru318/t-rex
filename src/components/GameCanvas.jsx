@@ -24,26 +24,31 @@ function GameCanvas() {
     let location = useLocation();
     let userName = location.state?.username || "Guest";
 
+
     function handleStart() {
+
         setStart(prev => !prev)
         setStatus(false)
+        setJump(false)
+        setCactus([])
         scoreCactusRef.current.clear();
         setScore(0);
     }
 
     function handleJump() {
-        if (!isJump) {
+        if (!isJump && isStart) {
             setJump(true)
         }
         setTimeout(() => {
             setJump(false)
-        }, 1000);
+        }, 500);
 
     }
 
     function handleSaveScore() {
 
         let playerData = ref(db, "userScore");
+
         push(playerData, {
             name: userName,
             score: score
@@ -79,7 +84,7 @@ function GameCanvas() {
 
         let checkCollision = () => {
 
-            let dinoRect = dinoRef.current?.getBoundingClientRect()
+            let dinoRect = dinoRef.current.getBoundingClientRect()
             if (!dinoRect) return;
             cactusRef.current.forEach(cactusEl => {
 
@@ -113,16 +118,32 @@ function GameCanvas() {
         return () => cancelAnimationFrame(animationId);
 
     }, [isStart]);
+    
 
+    useEffect(() => {
+
+        let handleKeyDown = (e) => {
+            if (e.code === "Space") {
+                e.preventDefault();
+                handleJump()
+            }
+        }
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        }
+
+    }, [isJump,isStart]);
 
     return (
         <>
 
             <div className=" w-full max-w-[800px] h-[220px] sm:h-[260px] md:h-[300px] mx-auto my-10 sm:my-20 relative border rounded-xl overflow-hidden">
-                <img src={dino} ref={dinoRef} className={`absolute bottom-[72px] sm:bottom-[75px] left-20 w-[60px] ${isJump ? 'animate-jump' : ''}`} alt="" />
+                <img src={dino} ref={dinoRef} className={`absolute bottom-[72px] sm:bottom-[75px] left-20 w-[50px] ${isJump ? 'animate-jump' : ''}`} alt="" />
                 {cactus.map((cactus, id) => (
                     <div className={`absolute sm:bottom-[88px] md:bottom-[80px] bottom-[77px] ${isStart ? 'animate-cactus' : ''}`}>
-                        <img key={id} src={cactus.image} ref={el => (cactusRef.current[id] = el)} className="h-[60px] object-cover" alt="Cactus" />
+                        <img key={id} src={cactus.image} ref={el => (cactusRef.current[id] = el)} className="  h-[55px] object-cover" alt="Cactus" />
                     </div>
                 ))}
                 <div className={`absolute bottom-20  w-max flex ${isStart ? 'animate-ground' : ''}`}>
