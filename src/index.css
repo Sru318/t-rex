@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@keyframes scroll-ground {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-ground {
+  animation: scroll-ground 8s linear infinite;
+}
+
+
+@keyframes dino-jump {
+  0% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-120px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.animate-jump {
+  animation: dino-jump 1s;
+}
+
+
+
+@keyframes cactus-flow {
+  from {
+    transform: translateX(110vw);
+  }
+  to {
+    transform: translateX(-50vw);
+  }
+}
+.animate-cactus {
+  
+  animation: cactus-flow 7s linear forwards;
+}
